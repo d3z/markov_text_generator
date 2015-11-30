@@ -7,17 +7,20 @@ def clean_text(input):
     return text
 
 
-def triplets(words):
-    for index in range(len(words) - 2):
-        yield (words[index], words[index+1], words[index+2])
+def states(words, state_size):
+    for index in range(len(words) - state_size):
+        state = []
+        for x in range(state_size):
+            state.append(words[index + x])
+        yield (tuple(state), words[index + state_size])
 
 
-def parse(text):
+def parse(text, state_size=2):
     corpus = {}
     words = clean_text(text).split(" ")
-    for (w1, w2, w3) in triplets(words):
-        key = (w1, w2)
-        corpus[key] = corpus.get(key, []) + [w3]
+    for state in states(words, state_size):
+        (key, value) = state
+        corpus[key] = corpus.get(key, []) + [value]
     return corpus
 
 

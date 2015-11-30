@@ -7,6 +7,16 @@ class MarkovTests(unittest.TestCase):
         corpus = parse("This is some text.")
         self.assertDictEqual({("This", "is"): ["some"], ("is", "some"): ["text."]}, corpus)
 
+    def test_parse_multiple_values(self):
+        corpus = parse("This is some is some text.");
+        self.assertDictEqual({("This", "is"): ["some"], ("is", "some"): ["is", "text."], ("some", "is"): ["some"]}, corpus)
+
+    def test_parse_state_size(self):
+        corpus = parse("This is some more text.", 3)
+        self.assertDictEqual({("This", "is", "some"): ["more"], ("is", "some", "more"): ["text."]}, corpus)
+        corpus = parse("This is some more text.", 4)
+        self.assertDictEqual({("This", "is", "some", "more"): ["text."]}, corpus)
+
     def test_generate(self):
         corpus = parse("This is some text.")
         generated = generate(corpus)
